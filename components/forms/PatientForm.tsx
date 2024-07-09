@@ -7,6 +7,8 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
+import SubmitButton from "../SubmitButton";
+import { useState } from "react";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -25,6 +27,8 @@ const FormSchema = z.object({
 });
 
 const PatientForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -71,7 +75,9 @@ const PatientForm = () => {
           label="Phone Number"
           placeholder="+91 893-345-4567"
         />
-        <Button type="submit">Submit</Button>
+        <SubmitButton isLoading={isLoading} className="shad-primary-btn w-full">
+          Get Started
+        </SubmitButton>
       </form>
     </Form>
   );
