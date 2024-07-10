@@ -1,21 +1,10 @@
 "use server";
 
 import { ID, Query } from "node-appwrite";
-
-import {
-  BUCKET_ID,
-  DATABASE_ID,
-  ENDPOINT,
-  PATIENT_COLLECTION_ID,
-  PROJECT_ID,
-  databases,
-  storage,
-  users,
-} from "../appwrite.config";
+import { users } from "../appwrite.config";
 import { parseStringify } from "../utils";
 import { InputFile } from "node-appwrite/file";
 
-// CREATE APPWRITE USER
 export const createUser = async (user: CreateUserParams) => {
   try {
     // Create new user -> https://appwrite.io/docs/references/1.5.x/server-nodejs/users#create
@@ -29,15 +18,30 @@ export const createUser = async (user: CreateUserParams) => {
 
     return parseStringify(newuser);
   } catch (error: any) {
+    // Detailed error logging
+    console.error("Error creating user:", error.message, {
+      code: error.code,
+      response: error.response,
+    });
+
     // Check existing user
     if (error && error?.code === 409) {
-      const existingUser = await users.list([
-        Query.equal("email", [user.email]),
-      ]);
+      try {
+        const existingUser = await users.list([
+          Query.equal("email", [user.email]),
+        ]);
 
-      return existingUser.users[0];
+        return existingUser.users[0];
+      } catch (listError: any) {
+        console.error("Error listing existing user:", listError.message, {
+          code: listError.code,
+          response: listError.response,
+        });
+        throw listError; // Re-throw to propagate the error
+      }
     }
-    console.error("An error occurred while creating a new user:", error);
+
+    throw error; // Re-throw to propagate the error
   }
 };
 
@@ -45,7 +49,6 @@ export const createUser = async (user: CreateUserParams) => {
 export const getUser = async (userId: string) => {
   try {
     const user = await users.get(userId);
-
     return parseStringify(user);
   } catch (error) {
     console.error(
