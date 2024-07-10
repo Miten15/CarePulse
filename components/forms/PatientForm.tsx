@@ -50,7 +50,9 @@ const PatientForm = () => {
         router.push(`/patients/${newUser.$id}/register`);
       }
     } catch (error) {
-      console.log("Error creating user:", error); // Debug log
+      console.error("Error creating user:", error); // Changed to console.error for better error logging
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,13 +61,13 @@ const PatientForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
         <section className="mb-12 space-y-4">
           <h1 className="header">Hi there 👋</h1>
-          <p className="text-drak-700">Schedule your first appointment</p>
+          <p className="text-dark-700">Schedule your first appointment</p>
         </section>
 
         <CustomFormField
           control={form.control}
           fieldType={FormFieldType.INPUT}
-          name="Name"
+          name="name"
           label="Full Name"
           placeholder="Zino Senapi"
           iconSrc="/assets/icons/user.svg"
@@ -74,7 +76,7 @@ const PatientForm = () => {
         <CustomFormField
           control={form.control}
           fieldType={FormFieldType.INPUT}
-          name="Email"
+          name="email"
           label="Email"
           placeholder="zinosenpai@gmail.com"
           iconSrc="/assets/icons/email.svg"
