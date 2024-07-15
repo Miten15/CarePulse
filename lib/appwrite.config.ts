@@ -1,6 +1,6 @@
 import * as sdk from "node-appwrite";
 
-const {
+export const {
   NEXT_PUBLIC_ENDPOINT: ENDPOINT,
   PROJECT_ID,
   API_KEY,
